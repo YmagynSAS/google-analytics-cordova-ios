@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android"
+id="org.google.analytics"
+    version="0.0.1">
+	
+    <name>GoogleAnalytics</name>
+	<author>Google</author>
+	<license>MIT</license>
+	
+	<js-module src="www/GoogleAnalyticsPlugin.js" name="GoogleAnalytic">
+        <clobbers target="window.GA" />
+    </js-module>
+
+	<!-- ios -->
+	<platform name="ios">
+		
+		<config-file target="config.xml" parent="/*">
+			<feature name="GoogleAnalyticsPlugin">
+				<param name="ios-package" value="GoogleAnalyticsPlugin"/>
+			</feature>
+		</config-file>
+
+		<source-file src="src/ios/GoogleAnalyticsPlugin.m" />
+		<header-file src="src/ios/GoogleAnalyticsPlugin.h" />
+
+		<header-file src="src/ios/GoogleSDK/GAI.h" />
+		<header-file src="src/ios/GoogleSDK/GAITrackedViewController.h" />
+		<header-file src="src/ios/GoogleSDK/GAITracker.h" />
+		<header-file src="src/ios/GoogleSDK/GAITransaction.h" />
+		<header-file src="src/ios/GoogleSDK/GAITransationItem.h" />
+		<source-file src="src/ios/GoogleSDK/libGoogleAnalytics.a" framework="true" />
+
+	</platform>
+</plugin>

@@ -2,16 +2,18 @@
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 2;
 @implementation GoogleAnalyticsPlugin
-- (void) trackerWithTrackingId:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void) trackerWithTrackingId:(CDVInvokedUrlCommand*)command
 {
-    NSString* accountId = [arguments objectAtIndex:0];
+    NSString* accountId = [command objectAtIndex:0];
     [GAI sharedInstance].debug = YES;
     [GAI sharedInstance].dispatchInterval = kGANDispatchPeriodSec;
     [GAI sharedInstance].trackUncaughtExceptions = YES;
     [[GAI sharedInstance] trackerWithTrackingId:accountId];
 }
-- (void) trackEventWithCategory:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+
+- (void) trackEventWithCategory:(CDVInvokedUrlCommand*)command
 {
+    NSMutableDictionary* options = (NSMutableDictionary*)[command argumentAtIndex:0];
     NSString* category = [options valueForKey:@"category"];
     NSString* action = [options valueForKey:@"action"];
     NSString* label = [options valueForKey:@"label"];
@@ -27,9 +29,10 @@ static const NSInteger kGANDispatchPeriodSec = 2;
     NSLog(@"GoogleAnalyticsPlugin.trackEvent::%@, %@, %@, %@",category,action,label,value);
 }
 
-- (void) trackView:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void) trackView:(CDVInvokedUrlCommand*)command
 {
-    NSString* pageUri = [arguments objectAtIndex:0];
+    
+    NSString* pageUri = [command objectAtIndex:0];
     if (![[GAI sharedInstance].defaultTracker trackView:pageUri]) {
         // TODO: Handle error here
     }
