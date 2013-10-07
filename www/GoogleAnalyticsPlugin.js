@@ -21,7 +21,7 @@ GoogleAnalytics.trackView = function(pageUri, success, error) {
 	}
 }
 
-GoogleAnalytics.trackEventWithCategory = function(category,action,label,value) {
+GoogleAnalytics.trackEventWithCategory = function(category, action, label, value, success, error) {
 	var options = {
 		category:category,
 		action:action,
