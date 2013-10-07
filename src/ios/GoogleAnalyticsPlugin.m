@@ -10,6 +10,13 @@ static const NSInteger kGANDispatchPeriodSec = 2;
     [GAI sharedInstance].dispatchInterval = 20;
     [GAI sharedInstance].debug = YES;
     id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:accountId];
+
+    if (tracker == nil) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"An error occured."];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void) trackEventWithCategory:(CDVInvokedUrlCommand*)command
@@ -22,15 +29,19 @@ static const NSInteger kGANDispatchPeriodSec = 2;
     NSNumber* value = [options valueForKey:@"value"];
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     
-    if (![tracker sendEventWithCategory:@"MyFirstScreen"
-                        withAction:@"ButtonPress"
-                         withLabel:@"ButtonOne"
-                         withValue:nil]) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"An error occured."];
-    } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    @try {
+        if (![tracker sendEventWithCategory:category
+                            withAction:action
+                             withLabel:label
+                             withValue:value]) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"An error occured."];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        }
+    } @catch(NSException *e) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:e.name];
     }
-    NSLog(@"GoogleAnalyticsPlugin.trackEvent::%@, %@, %@, %@",category,action,label,value);
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void) trackView:(CDVInvokedUrlCommand*)command
