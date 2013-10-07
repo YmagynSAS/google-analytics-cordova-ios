@@ -14,6 +14,7 @@ static const NSInteger kGANDispatchPeriodSec = 2;
 
 - (void) trackEventWithCategory:(CDVInvokedUrlCommand*)command
 {
+    CDVPluginResult* pluginResult = nil;
     NSMutableDictionary* options = (NSMutableDictionary*)[command argumentAtIndex:0];
     NSString* category = [options valueForKey:@"category"];
     NSString* action = [options valueForKey:@"action"];
@@ -21,24 +22,28 @@ static const NSInteger kGANDispatchPeriodSec = 2;
     NSNumber* value = [options valueForKey:@"value"];
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     
-    [tracker sendEventWithCategory:@"MyFirstScreen"
+    if (![tracker sendEventWithCategory:@"MyFirstScreen"
                         withAction:@"ButtonPress"
                          withLabel:@"ButtonOne"
-                         withValue:nil];
+                         withValue:nil]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"An error occured."];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    }
     NSLog(@"GoogleAnalyticsPlugin.trackEvent::%@, %@, %@, %@",category,action,label,value);
 }
 
 - (void) trackView:(CDVInvokedUrlCommand*)command
 {
+    CDVPluginResult* pluginResult = nil;
     NSString* pageUri = [command argumentAtIndex:0];
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
 
-    [tracker sendView:pageUri];
-}
-
-- (void) hitDispatched:(NSString *)hitString
-{
-    NSString* callback = [NSString stringWithFormat:@"window.plugins.googleAnalyticsPlugin.hitDispatched(%@);",  hitString];
-    [ self.webView stringByEvaluatingJavaScriptFromString:callback];
+    if (![tracker sendView:pageUri]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"An error occured."];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 @end
