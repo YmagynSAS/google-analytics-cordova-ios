@@ -44,11 +44,3 @@ GoogleAnalytics.trackEventWithCategory = function(category, action, label, value
 }
 
 module.exports = GoogleAnalytics;
-
-YMAGYN.SDK.GoogleAnalytics.start('UA-44651271-1', function(data) {
-	console.log(JSON.stringify(data));
-	if (!data.error) {
-		//YMAGYN.SDK.GoogleAnalytics.trackPageView('Home SDK !', function(data) { console.log(JSON.stringify(data)); });
-		YMAGYN.SDK.GoogleAnalytics.trackEvent("SDK Category", "Sparta !", "This is", "Madness", function(data) { console.log(JSON.stringify(data)); });
-	}
-});

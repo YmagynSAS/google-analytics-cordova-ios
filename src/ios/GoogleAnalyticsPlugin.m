@@ -4,6 +4,7 @@ static const NSInteger kGANDispatchPeriodSec = 2;
 @implementation GoogleAnalyticsPlugin
 - (void) trackerWithTrackingId:(CDVInvokedUrlCommand*)command
 {
+    CDVPluginResult* pluginResult = nil;
     NSString* accountId = [command argumentAtIndex:0];
 
     [GAI sharedInstance].trackUncaughtExceptions = YES;
